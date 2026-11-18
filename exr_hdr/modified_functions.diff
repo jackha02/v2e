@@ -1,0 +1,8 @@
+--- ../reports/pipeline-agent/work/orig_rescale_intensity_frame.py	2026-11-18 10:09:27.582477287 -0500
++++ ../reports/pipeline-agent/work/copy_rescale_intensity_frame.py	2026-11-18 10:09:33.453578950 -0500
+@@ -4,4 +4,4 @@
+     make sure we get no zero time constants
+     limit max time constant to ~1/10 of white intensity level
+     """
+-    return (new_frame+20)/275.
++    return torch.clamp((new_frame+20)/275., max=1.)  # CHANGED(emulator_utils.py:54)

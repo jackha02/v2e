@@ -1,0 +1,48 @@
+{
+ "fps": 120,
+ "frame_count": 200,
+ "resolution": [
+  346,
+  260
+ ],
+ "sun_strength": 8.0,
+ "sun_elevation_deg": 14.0,
+ "sun_azimuth_deg_from_plusY": 25.0,
+ "sun_angle_deg": 8.0,
+ "world_strength": 0.02,
+ "gray_card_albedo": 0.18,
+ "gray_card_cos_sun": 0.24192190170288086,
+ "gray_card_expected_luminance_sun_only": 0.11088883151483069,
+ "seed": 0,
+ "animated_seed": false,
+ "samples": 128,
+ "adaptive_sampling": true,
+ "denoiser": "off",
+ "device": "CPU",
+ "blender_version": "4.5.16 LTS",
+ "view_transform": "Standard",
+ "exr": "OPEN_EXR 16-bit half, ZIP, RGB, single layer",
+ "camera_lens_mm": 35,
+ "sensor_width_mm": 36,
+ "gray_card_expected_luminance_sky": 0.002315448,
+ "white_reference_gray_card_luminance_in_scene": 0.09719756621614625,
+ "white_reference_note": "Rec709 luminance of the gray card (albedo 0.18) measured in the rendered EXRs (mean over 200 frames, eroded card mask); includes partial occlusion of the low edge of the 8deg sun disc by the bridge deck. Isolated card-only calibration render (debug/calib) = 0.113204 vs analytic 0.113204.",
+ "gray_card_luminance_unoccluded_calibration_render": 0.11320448913254662,
+ "exr_channels": "single \"RGB\" half-float group (R,G,B in OpenEXR python: array HxWx3 float16), no alpha, no extra passes; compression ZIP",
+ "units_note": "Scene-linear Rec709 radiance as written by Cycles; Blender sun strength = irradiance (W/m2), white diffuse facing sun = S/pi",
+ "motion_estimate_px_per_frame_vertex_based": {
+  "max": 0.6207042832302951,
+  "max_p99": 0.2279370248752058
+ },
+ "ocean": {
+  "resolution": 16,
+  "spatial_size_m": 60,
+  "wave_scale": 0.5,
+  "wave_scale_min": 0.2,
+  "choppiness": 0.8,
+  "wind_velocity": 4.0,
+  "random_seed": 3,
+  "depth": 200,
+  "time_s": "(frame-1)/fps"
+ }
+}

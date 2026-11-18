@@ -1,0 +1,88 @@
+{
+ "n_frames": 200,
+ "channels": {
+  "RGB": "float16 (260, 346, 3)"
+ },
+ "compression": "Compression.ZIP_COMPRESSION",
+ "header_keys": [
+  "Camera",
+  "Date",
+  "File",
+  "Frame",
+  "RenderTime",
+  "Scene",
+  "Time",
+  "channels",
+  "compression",
+  "cycles.ViewLayer.render_time",
+  "cycles.ViewLayer.samples",
+  "cycles.ViewLayer.synchronization_time",
+  "cycles.ViewLayer.total_time",
+  "dataWindow",
+  "displayWindow",
+  "lineOrder",
+  "pixelAspectRatio",
+  "screenWindowCenter",
+  "screenWindowWidth",
+  "type",
+  "xDensity"
+ ],
+ "data_type": {
+  "RGB": "PixelType.HALF"
+ },
+ "mask_channels": {
+  "ViewLayer.Combined": "(260, 346, 4)",
+  "ViewLayer.IndexOB.X": "(260, 346)"
+ },
+ "stats": {
+  "luminance": "Rec709 Y of scene-linear RGB, all pixels all frames",
+  "gray_card_luminance_mean_over_frames": 0.09719756621614625,
+  "gray_card_std_over_frames": 1.25448999055759e-06,
+  "max": 118.125,
+  "p99_9": 84.375,
+  "min_positive": 1.912915649882052e-06,
+  "n_zero_pixels": 0,
+  "ratio_max_over_minpos": 61751285.27349517,
+  "dB_20log10_max_over_minpos": 155.8129200261248,
+  "dB_20log10_p99_9_over_minpos": 152.89035931256007,
+  "frac_above_10x_card": 0.00506608492663406,
+  "frac_below_0p05x_card": 0.47258853935082257,
+  "max_below_65504": true,
+  "n_inf_nan": 0,
+  "glint_max_over_card": 1215.3082077931426,
+  "glint_p99_9_sunlit_water_over_card": 937.5234745832812,
+  "shaded_water_max_over_card": 109.7153243146587,
+  "shaded_water_p99_9_over_card": 0.1000240960594783,
+  "shaded_water_mean_over_card": 0.0143163893738922,
+  "sunlit_water_p50_over_card": 0.05249565392653192,
+  "frac_sunlit_water_px_above_50x_card": 0.013002907384818251,
+  "frac_shaded_water_px_above_0p05x_card": 0.01507334338639859,
+  "per_frame_max_first_last": [
+   {
+    "file": "frame_0001.exr",
+    "max": 88.75,
+    "card": 0.09719669114037958
+   },
+   {
+    "file": "frame_0200.exr",
+    "max": 104.4867125,
+    "card": 0.09719886745592686
+   }
+  ],
+  "mean_sunlit_water_px_per_frame": 29598.765,
+  "mean_shaded_water_px_per_frame_eroded": 7994.245,
+  "per_frame_sunlit_water_max_over_card": [
+   913.0887063842658,
+   959.3861619192427,
+   1025.61724414289,
+   1082.8460433458476,
+   1111.781953055208,
+   1141.2241768824608,
+   1132.358599959642,
+   907.8078385602859,
+   888.0109179694866,
+   1047.4799314788513
+  ],
+  "n_frames_with_glint_px_over_50x": 200
+ }
+}
