@@ -8,4 +8,4 @@ def rescale_intensity_frame(new_frame):
     make sure we get no zero time constants
     limit max time constant to ~1/10 of white intensity level
     """
-    return torch.clamp((new_frame+20)/275., max=1.)  # changed: clamp at 1, original is (new_frame+20)/275.
+    return torch.clamp((new_frame+20)/275., max=1.)  # intensity clamped to at most 1

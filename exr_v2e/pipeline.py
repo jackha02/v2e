@@ -3,13 +3,12 @@
 
 Run with the repository root on PYTHONPATH and a working directory outside the v2e source tree:
 
-    PYTHONPATH=<repo> python -P -m exr_v2e.pipeline --exr_dir FRAMES --fps 480 --white median \\
+    PYTHONPATH=<repo> python -m exr_v2e.pipeline --exr_dir FRAMES --fps 480 --white median \\
         --dvs346 --dvs_params noisy --dvs_h5 events.h5 --rgb_dir rgb --rgb_fps 60 -o OUT
 
 Every EXR frame i enters the emulator at t = i / fps as float luminance DN = Y * 255 / white (not clipped, not
 rounded); v2e's own lin_log, filter, noise and event generation do the rest. Only rescale_intensity_frame is replaced
-(modified_functions.py). Not supported: --dvs_text, SuperSloMo upsampling (render more frames instead),
---start_time and --stop_time.
+(modified_functions.py). Not supported: --dvs_text, SuperSloMo upsampling, --start_time and --stop_time.
 """
 import argparse
 import json
@@ -58,9 +57,6 @@ def get_args(argv=None):
     group.add_argument("--rgb_fps", type=float, default=None, help="frame rate of the RGB frames (default: --fps)")
     group.add_argument("--rgb_shutter", type=float, default=0.5,
                        help="fraction of the RGB frame interval during which the shutter is open (0.5 = 180 deg)")
-    group.add_argument("--rgb_only", action="store_true", help="write only the RGB frames, no events")
-    group.add_argument("--legacy_dn", action="store_true",
-                       help="round and clip DN to 8 bit and use the unmodified v2e path (equivalence tests)")
     args, other = parser.parse_known_args(argv)
     return args, other, " ".join(sys.argv if argv is None else argv)
 
@@ -96,9 +92,6 @@ def main(argv=None):
         with open(os.path.join(args.rgb_dir, "exr_v2e_meta.json"), "w") as f:
             json.dump(meta, f, indent=1)
         logger.info(f"wrote {info['n_frames']} RGB frames to {args.rgb_dir} (white = {white:.6g})")
-    if args.rgb_only:
-        return
-
     if args.output_folder is None:
         logger.error("-o/--output_folder is required")
         v2e_quit(1)
@@ -112,7 +105,8 @@ def main(argv=None):
     if args.hdr or args.synthetic_input or args.input:
         logger.error("--hdr, --synthetic_input and --input are not used with EXR input")
         v2e_quit(1)
-    for name in ("start_time", "stop_time", "timestamp_resolution", "input_frame_rate", "ddd_output", "output_in_place"):
+    for name in ("start_time", "stop_time", "timestamp_resolution", "input_frame_rate", "ddd_output",
+                 "output_in_place"):
         if getattr(args, name):
             logger.warning(f"--{name} is ignored")
 
@@ -149,8 +143,7 @@ def main(argv=None):
         label_signal_noise=args.label_signal_noise)
     if args.dvs_params is not None:
         emulator.set_dvs_params(args.dvs_params)
-    if not args.legacy_dn:
-        v2ecore.emulator.rescale_intensity_frame = modified_functions.rescale_intensity_frame
+    v2ecore.emulator.rescale_intensity_frame = modified_functions.rescale_intensity_frame
     renderer = EventRenderer(
         output_path=output_folder, dvs_vid=dvs_vid, preview=not args.no_preview,
         full_scale_count=args.dvs_vid_full_scale, exposure_mode=exposure_mode, exposure_value=exposure_value,
@@ -165,8 +158,6 @@ def main(argv=None):
             frame = crop_frame(exr_to_dn(path, weights, white), crop)
             if frame.shape != (output_height, output_width):
                 frame = cv2.resize(frame, (output_width, output_height), interpolation=cv2.INTER_AREA)
-            if args.legacy_dn:
-                frame = np.clip(np.rint(frame), 0, 255).astype(np.float32)
             new_events = emulator.generate_events(frame, i * dt)
             progress.update(1)
             if new_events is not None and new_events.shape[0] > 0 and not args.skip_video_output:

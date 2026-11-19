@@ -7,6 +7,8 @@ sensors see the scene at the same exposure. Clipping at white and 8-bit quantisa
 """
 from pathlib import Path
 
+import json
+
 import cv2
 import numpy as np
 
@@ -19,7 +21,10 @@ def median_white(exr_files, weights=REC709, max_frames=30):
     """Exposure rule "median": the clip's median luminance (over at most max_frames frames) maps to 18 % mid-gray."""
     picks = np.unique(np.linspace(0, len(exr_files) - 1, min(max_frames, len(exr_files))).astype(int))
     values = np.concatenate([luminance(read_exr_rgb(exr_files[i], validate=False), weights).ravel() for i in picks])
-    return float(np.median(values) / MID_GRAY)
+    median = float(np.median(values))
+    if median <= 0:
+        raise ValueError("the median luminance of the clip is 0, give a numeric white level instead of 'median'")
+    return median / MID_GRAY
 
 
 def resolve_white(exr_files, white="median", ev=0.0, weights=REC709):
@@ -29,10 +34,12 @@ def resolve_white(exr_files, white="median", ev=0.0, weights=REC709):
 
 
 def srgb_oetf(linear):
+    """sRGB transfer function: linear values in [0, 1] to encoded values in [0, 1]."""
     return np.where(linear <= 0.0031308, 12.92 * linear, 1.055 * np.power(np.maximum(linear, 0), 1 / 2.4) - 0.055)
 
 
 def linear_to_uint8(rgb_linear, white):
+    """Scene-linear RGB to 8-bit sRGB, with white mapped to 255 and everything above it clipped."""
     return np.rint(255.0 * srgb_oetf(np.clip(rgb_linear / white, 0.0, 1.0))).astype(np.uint8)
 
 
@@ -51,12 +58,21 @@ def extract_rgb_frames(exr_dir, out_dir, exr_fps, rgb_fps=None, white="median", 
     files = list_exr_frames(exr_dir)[:n_frames]
     validate_frames(files)
     rgb_fps = rgb_fps or exr_fps
+    if rgb_fps > exr_fps:
+        raise ValueError(f"rgb_fps ({rgb_fps:g}) is higher than the EXR frame rate ({exr_fps:g})")
     per_frame = int(round(exr_fps / rgb_fps))
     open_frames = max(1, int(round(per_frame * shutter)))
     white_level = resolve_white(files, white, ev, weights)
     n_rgb = len(files) // per_frame
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
+    marker = out_dir / "rgb_frames.json"
+    if not marker.exists() and any(out_dir.glob("*.png")):
+        raise FileExistsError(f"{out_dir} holds PNG files from another source, use an empty folder")
+    for old_frame in out_dir.glob("*.png"):  # frames of an earlier extraction into this folder
+        old_frame.unlink()
+    settings = {"exr_dir": str(exr_dir), "exr_fps": exr_fps, "rgb_fps": rgb_fps, "white": white_level}
+    marker.write_text(json.dumps(settings))
     for k in range(n_rgb):
         mean = sum(read_exr_rgb(files[k * per_frame + j], validate=False) for j in range(open_frames)) / open_frames
         cv2.imwrite(str(out_dir / f"{k + 1:04d}.png"), linear_to_uint8(mean, white_level)[..., ::-1])

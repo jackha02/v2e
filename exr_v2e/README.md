@@ -1,7 +1,9 @@
 # exr_v2e
 
 Event-camera simulation and 8-bit RGB extraction from Blender EXR frames (16-bit half float, ZIP, scene-linear RGB).
-The v2e source tree around this folder is unmodified; `modified_functions.py` holds the one copied function that differs.
+The v2e source tree around this folder is unmodified; `modified_functions.py` holds the one function that is copied
+and changed.
+
 
 | File | Content |
 |---|---|
@@ -16,8 +18,8 @@ The v2e source tree around this folder is unmodified; `modified_functions.py` ho
 sensors share one exposure. `median` maps the clip's median luminance to 18 % mid-gray; `--ev` shifts it in stops.
 
 ## Event input
-The event simulator needs densely sampled frames: render the scene at a high frame rate instead of upsampling. The RGB
-frames are built from the same frames at a lower rate (`--rgb_fps`) with a shutter window (`--rgb_shutter`).
+The event simulator needs densely sampled frames, so the scene is rendered at a high frame rate and not upsampled.
+The RGB frames are built from the same frames at a lower rate (`--rgb_fps`) with a shutter window (`--rgb_shutter`).
 
 ## Command line
 ```bash
