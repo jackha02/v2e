@@ -1,0 +1,7 @@
+OpenEXR>=3.3
+h5py
+opencv-python
+numpy
+torch
+tqdm
+engineering_notation
