@@ -7,7 +7,8 @@ and changed.
 
 | File | Content |
 |---|---|
-| `exr_io.py` | frame listing, format check (ZIP, HALF), RGB and luminance |
+| `exr_io.py` | frame listing, format check (ZIP, HALF), RGB and luminance, EXR writing |
+| `ortho.py` | `warp_exr_frames`: orthorectify EXR frames with a homography, `ortho_matrix_k` |
 | `rgb_camera.py` | exposure rule, sRGB 8-bit conversion, `extract_rgb_frames` |
 | `events.py` | `convert_exr_to_events` (runs `pipeline.py` in a subprocess), `read_events_h5` |
 | `pipeline.py` | command-line driver: EXR frames to v2e events and RGB frames |

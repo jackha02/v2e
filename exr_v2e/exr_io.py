@@ -44,6 +44,12 @@ def read_exr_rgb(path, validate=True):
     raise ValueError(f"{path}: no RGB, RGBA or <view layer>.Combined channel group in {list(channels)}")
 
 
+def write_exr_rgb(path, rgb):
+    """Write scene-linear RGB (height, width, 3) as a 16-bit half-float, ZIP compressed EXR file."""
+    header = {"compression": OpenEXR.ZIP_COMPRESSION, "type": OpenEXR.scanlineimage}
+    OpenEXR.File(header, {"RGB": np.ascontiguousarray(rgb, dtype=np.float16)}).write(str(path))
+
+
 def luminance(rgb, weights=REC709):
     """Scene-linear luminance of an RGB frame. NaN and negative values become 0; nothing is clipped above."""
     y = rgb @ np.asarray(weights, dtype=np.float32)
